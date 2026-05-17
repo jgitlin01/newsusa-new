@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import HeroCues from "./components/HeroCues";
 import LogoMarquee from "./components/LogoMarquee";
 import Mission from "./components/Mission";
 import Testimonials from "./components/Testimonials";
@@ -24,6 +25,7 @@ const Landing = () => {
     <main data-testid="landing-page">
       <Nav />
       <Hero />
+      <HeroCues />
       <LogoMarquee />
       <Mission />
       <Testimonials />
