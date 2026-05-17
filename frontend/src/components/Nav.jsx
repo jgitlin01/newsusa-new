@@ -53,7 +53,7 @@ const Nav = () => {
             className="btn-pill btn-primary hidden sm:inline-flex"
             data-testid="nav-cta-request-coverage"
           >
-            Request Coverage
+            Free AI Audit
             <ArrowUpRight size={16} />
           </a>
           <button
@@ -98,7 +98,7 @@ const Nav = () => {
               className="btn-pill btn-primary self-start mt-2"
               data-testid="nav-mobile-cta"
             >
-              Request Coverage <ArrowUpRight size={16} />
+              Free AI Audit <ArrowUpRight size={16} />
             </a>
           </div>
         </div>

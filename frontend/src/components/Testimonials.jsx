@@ -2,46 +2,46 @@ import React from "react";
 
 const testimonials = [
   {
-    brand: "Capitol Communications",
+    brand: "Consumer Products CEO",
     quote:
-      "NewsUSA's network secured placements across 380 daily newspapers in under two weeks. Our public health initiative reached the right audiences with verifiable, third-party reporting.",
-    name: "Mara Halloway",
-    role: "Director of Communications",
+      "More valuable than traditional advertising. The earned coverage built credibility our paid spend simply couldn't reach.",
+    name: "CEO",
+    role: "Consumer Products Brand",
   },
   {
-    brand: "Liberty Foundation",
+    brand: "Agency Principal",
     quote:
-      "Earned media used to feel like a gamble. With a guaranteed distribution network, we finally have a predictable channel for credible coverage tied directly to our policy launches.",
-    name: "James Whitfield",
-    role: "VP, Public Affairs",
+      "NewsUSA generated measurable new business for our clients. The placement reporting alone justified the engagement.",
+    name: "Principal",
+    role: "Marketing Agency",
   },
   {
-    brand: "Tribune Healthcare",
+    brand: "Marketing Agency CEO",
     quote:
-      "Our Spanish-language program ran in 220+ outlets in the first month. The bilingual editorial team understood our community better than any agency we had previously hired.",
-    name: "Lucia Ramos",
-    role: "Head of Brand Communications",
+      "Highly responsive and effective. Editorial-grade execution, on schedule, every cycle — exactly what high-stakes campaigns demand.",
+    name: "Chief Executive",
+    role: "Marketing Agency",
   },
   {
-    brand: "Foundry Industries",
+    brand: "National Consumer Brand",
     quote:
-      "The NewsUSA+ team rebuilt our entire investor narrative around earned credibility. We saw qualified inbound coverage requests within the first quarter.",
-    name: "Daniel Estes",
-    role: "Chief Marketing Officer",
+      "Internet orders have more than doubled since we launched our syndicated program. Earned coverage is now our single highest-ROI channel.",
+    name: "VP Marketing",
+    role: "National Consumer Co.",
   },
   {
-    brand: "Atlas Energy",
+    brand: "32,000+ Campaigns Since 1987",
     quote:
-      "Responsive, deeply networked, and surprisingly editorial. Every release we sent through their syndication picked up trade-press coverage we could measure.",
-    name: "Priya Anand",
-    role: "Director of External Affairs",
+      "Four decades. One trusted network. From CPG launches to investor announcements, NewsUSA has delivered editorial credibility for the brands buyers — and now AI engines — actually trust.",
+    name: "Rick Smith",
+    role: "Founder & CEO, NewsUSA",
   },
   {
-    brand: "Heritage Civic Group",
+    brand: "$50M+ in Tracked Sales Growth",
     quote:
-      "When we needed broadcast and print to land within the same news cycle, NewsUSA was the only network that delivered both, on time, and to the regions we cared about.",
-    name: "Robert Klein",
-    role: "Executive Director",
+      "Monthly national features generated retail demand we could measure. 12,600+ inbound calls in a single program — fast editorial coverage became reusable sales assets.",
+    name: "Case Study",
+    role: "Multi-channel CPG Campaign",
   },
 ];
 
@@ -53,7 +53,7 @@ const Testimonials = () => {
       style={{ background: "var(--nu-space)" }}
       data-testid="section-testimonials"
     >
-      <div className="container-nu mb-14 grid grid-cols-12 gap-6 items-end">
+      <div className="container-nu mb-20 lg:mb-28 grid grid-cols-12 gap-6 items-end">
         <div className="col-span-12 lg:col-span-7">
           <div className="eyebrow">Voices on the wire</div>
           <h2
@@ -69,8 +69,9 @@ const Testimonials = () => {
             className="font-sans"
             style={{ color: "var(--nu-muted)", fontSize: 16, maxWidth: 460, marginLeft: "auto" }}
           >
-            Read how directors of communications, public affairs leads, and CMOs
-            describe the impact of guaranteed editorial placement.
+            Four decades of earned coverage for consumer, tech, finance, health,
+            and professional brands. Hear it from CEOs, agency principals, and
+            marketing leaders who measure their results in revenue.
           </p>
         </div>
       </div>

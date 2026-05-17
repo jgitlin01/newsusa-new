@@ -14,30 +14,27 @@ const VIDEO_URL_WEBM = `${process.env.PUBLIC_URL || ""}/media/newsusa-hero.webm`
 
 const cues = [
   {
-    eyebrow: "Earned Media",
-    title: ["Bringing back", "trust"],
-    sub: "to American news.",
+    eyebrow: "AI is rewriting buying decisions",
+    title: ["88%", "invisible"],
+    sub: "of businesses don't appear when prospects ask AI for recommendations.",
   },
   {
-    eyebrow: "Coverage. Guaranteed.",
-    title: ["Press releases that", "actually run"],
-    sub: "in newspapers, on TV, online, and on the radio.",
+    eyebrow: "Earned Media, AI-Optimized",
+    title: ["Press coverage that", "AI cites back"],
+    sub: "Editorial placements that authoritatively appear in newspapers, on TV, online — and in the AI answers your buyers are already reading.",
   },
   {
-    eyebrow: "Since 1988",
-    title: ["Your story,", "in the headlines"],
-    sub: "of the publications your audience already reads.",
+    eyebrow: "Founded by Rick Smith — Since 1987",
+    title: ["32,000+ campaigns.", "One network."],
+    sub: "NewsUSA puts your brand in front of the buyers — and the AI models — that decide.",
   },
 ];
 
 const Hero = () => {
   const shellRef = useRef(null);
   const videoRef = useRef(null);
-  const rafRef = useRef(null);
-  const targetTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [ready, setReady] = useState(false);
   const [fallback, setFallback] = useState(false);
 
   // Detect reduced motion / coarse pointer (mobile) / narrow viewport — fallback to autoplay loop.
@@ -66,7 +63,6 @@ const Hero = () => {
     if (!v) return;
     const onMeta = () => {
       setDuration(v.duration || 0);
-      setReady(true);
       if (fallback) {
         v.loop = true;
         v.muted = true;
@@ -78,48 +74,42 @@ const Hero = () => {
     return () => v.removeEventListener("loadedmetadata", onMeta);
   }, [fallback]);
 
-  // rAF loop to ease video.currentTime toward target
+  // Direct 1:1 scroll-to-frame sync (no rAF easing). Each scroll position maps
+  // exactly to a video frame so scrubbing feels physically connected to the
+  // scroll wheel / trackpad.
   useEffect(() => {
     if (fallback) return;
     const v = videoRef.current;
-    if (!v) return;
+    const shell = shellRef.current;
+    if (!v || !shell) return;
 
-    const tick = () => {
-      const target = targetTimeRef.current;
-      const current = v.currentTime;
-      const diff = target - current;
-      if (Math.abs(diff) > 0.015) {
-        // ease
-        try {
-          v.currentTime = current + diff * 0.18;
-        } catch (e) {
-          // ignore
-        }
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [fallback, ready]);
-
-  // Scroll handler — compute progress through hero shell
-  useEffect(() => {
-    if (fallback) return;
-    const onScroll = () => {
-      const shell = shellRef.current;
-      if (!shell) return;
+    let rafPending = false;
+    const update = () => {
+      rafPending = false;
       const rect = shell.getBoundingClientRect();
       const total = shell.offsetHeight - window.innerHeight;
-      const scrolled = Math.min(
-        Math.max(-rect.top, 0),
-        total
-      );
+      const scrolled = Math.min(Math.max(-rect.top, 0), total);
       const p = total > 0 ? scrolled / total : 0;
       setProgress(p);
-      const d = duration || (videoRef.current && videoRef.current.duration) || 0;
-      if (d > 0) targetTimeRef.current = p * d * 0.999;
+      const d = duration || v.duration || 0;
+      if (d > 0 && !Number.isNaN(d)) {
+        const target = Math.min(d - 0.001, p * d);
+        // Only assign if we have buffered enough — otherwise the assignment
+        // is a no-op and the browser shows the last decoded frame.
+        try {
+          v.currentTime = target;
+        } catch (e) {
+          /* ignore */
+        }
+      }
     };
-    onScroll();
+
+    const onScroll = () => {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
@@ -140,7 +130,7 @@ const Hero = () => {
       className="hero-shell"
       data-testid="hero-scroll-video"
       id="top"
-      style={{ height: fallback ? "100vh" : "280vh" }}
+      style={{ height: fallback ? "100vh" : "320vh" }}
     >
       <div className="hero-sticky">
         <video
@@ -175,7 +165,7 @@ const Hero = () => {
               fontWeight: 500,
             }}
           >
-            <span style={{ color: "#0068C2" }}>●</span> &nbsp; Earned Media Network — Est. 1988
+            <span style={{ color: "#0068C2" }}>●</span> &nbsp; Earned Media Network — Est. 1987
           </span>
           <span
             className="hidden md:inline font-sans"

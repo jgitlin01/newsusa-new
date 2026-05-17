@@ -15,7 +15,7 @@ const Mission = () => {
             style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}
           >
             Earned media that{" "}
-            <span className="display-italic">moves audiences</span>.
+            <span className="display-italic">moves revenue</span>.
           </h2>
         </div>
 
@@ -30,9 +30,9 @@ const Mission = () => {
               fontWeight: 500,
             }}
           >
-            Press releases sent to the void. Pitches ignored. Generic placements
-            that nobody reads. These familiar frustrations quietly drain the
-            credibility of even the best-prepared communications teams.
+            Every month, invisible brands lose buyers to louder competitors. AI
+            now influences buying decisions before your sales team is ever
+            contacted — and 88% of businesses don't appear in those answers.
           </p>
           <p
             className="font-sans"
@@ -43,48 +43,40 @@ const Mission = () => {
               maxWidth: "62ch",
             }}
           >
-            With more than three decades of experience and a guaranteed
-            distribution network spanning daily newspapers, broadcast stations,
-            and trusted digital outlets, NewsUSA helps brands, agencies, and
-            government partners deliver clear, credible, third-party-validated
-            coverage that audiences actually read, watch, and remember.
+            Founded by Rick Smith in 1987, NewsUSA is the earned-media network
+            that puts your brand in front of the buyers — and the AI engines —
+            making today's decisions. Editorial syndication, broadcast
+            placement, and AI-optimized authority content, delivered as one
+            accountable program across consumer, tech, finance, health, and
+            professional categories.
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 pt-8 border-t" style={{ borderColor: "var(--nu-line)" }}>
+          <div
+            className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 pt-8 border-t"
+            style={{ borderColor: "var(--nu-line)" }}
+          >
             <div>
-              <div className="stat-num" style={{ fontSize: 44 }}>10K+</div>
-              <div
-                className="font-sans text-sm mt-1"
-                style={{ color: "var(--nu-muted)" }}
-              >
-                Media partners
+              <div className="stat-num" style={{ fontSize: 44 }}>32K+</div>
+              <div className="font-sans text-sm mt-1" style={{ color: "var(--nu-muted)" }}>
+                Client campaigns since 1987
               </div>
             </div>
             <div>
-              <div className="stat-num" style={{ fontSize: 44 }}>50</div>
-              <div
-                className="font-sans text-sm mt-1"
-                style={{ color: "var(--nu-muted)" }}
-              >
-                States covered
+              <div className="stat-num" style={{ fontSize: 44 }}>$50M+</div>
+              <div className="font-sans text-sm mt-1" style={{ color: "var(--nu-muted)" }}>
+                Tracked sales growth
               </div>
             </div>
             <div>
-              <div className="stat-num" style={{ fontSize: 44 }}>37</div>
-              <div
-                className="font-sans text-sm mt-1"
-                style={{ color: "var(--nu-muted)" }}
-              >
+              <div className="stat-num" style={{ fontSize: 44 }}>12.6K+</div>
+              <div className="font-sans text-sm mt-1" style={{ color: "var(--nu-muted)" }}>
+                Inbound calls driven
+              </div>
+            </div>
+            <div>
+              <div className="stat-num" style={{ fontSize: 44 }}>38</div>
+              <div className="font-sans text-sm mt-1" style={{ color: "var(--nu-muted)" }}>
                 Years on the wire
-              </div>
-            </div>
-            <div>
-              <div className="stat-num" style={{ fontSize: 44 }}>100%</div>
-              <div
-                className="font-sans text-sm mt-1"
-                style={{ color: "var(--nu-muted)" }}
-              >
-                Coverage guarantee
               </div>
             </div>
           </div>

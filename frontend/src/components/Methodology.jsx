@@ -3,33 +3,33 @@ import React, { useState } from "react";
 const steps = [
   {
     num: "01",
-    title: "The earned-media partner that listens",
+    title: "AI Authority Audit",
     body:
-      "We start by analyzing your communications ecosystem — your audience, the news cycle around your sector, and the publications you actually want to be in. Then we co-author the editorial storyboard for your next program.",
+      "We start with a 15-minute discovery call and a deep audit of where your brand appears today across newsrooms, search, and AI engines like ChatGPT, Gemini, and Perplexity. You see exactly where competitors beat you and where revenue is leaking.",
   },
   {
     num: "02",
-    title: "Storytelling & editorial",
+    title: "Strategy",
     body:
-      "An editorial consultant works directly with your team to sharpen the angle, structure the release, and pressure-test the headline against the standards of the daily newsroom — not the marketing brief.",
+      "We review goals, market, and competitors, then recommend the best authority growth plan — editorial cadence, distribution channels, broadcast inclusion, and AI-citation targets. You sign off on a measurable plan, not a pitch deck.",
   },
   {
     num: "03",
-    title: "Distribution strategy",
+    title: "Creation",
     body:
-      "We pair the story with the right channels: daily newspaper syndication, vertical trade press, broadcast SMT, digital native placements, bilingual outlets — sequenced for maximum compounded reach.",
+      "Our editors design newsroom-grade stories — releases, broadcast packages, bylined content, and AI-optimized authority content. Every asset is built to be cited, syndicated, and crawled by the engines your buyers consult.",
   },
   {
     num: "04",
-    title: "Production & syndication",
+    title: "Placement",
     body:
-      "Editors finalize the package. Distribution operators push it across the network. Broadcast producers cut the segments. Every asset is staged and dispatched on a confirmed news-cycle schedule.",
+      "We launch fast. Releases ship across our exclusive news-site network, broadcast SMTs go to TV affiliates, and AI Authority Engine™ tags content for citation. NewsFLOW Intelligence™ surfaces real-time placement proof.",
   },
   {
     num: "05",
-    title: "Reporting & support",
+    title: "AI Re-Audit & Iterate",
     body:
-      "You receive a verified clip report with publication names, dates, geography, and estimated reach. Our editorial team stays on call for follow-up coverage and program iteration.",
+      "Thirty days in, we re-run the audit. You see how your visibility moved across newsrooms and AI answers, what's converting, and where to double down. Earned coverage compounds — and we make sure yours does, too.",
   },
 ];
 
@@ -43,21 +43,26 @@ const Methodology = () => {
     >
       <div className="container-nu grid grid-cols-12 gap-10 lg:gap-16">
         <div className="col-span-12 lg:col-span-5">
-          <div className="eyebrow">Methodology</div>
+          <div className="eyebrow">How it starts</div>
           <h2
             className="display mt-4"
             style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}
           >
-            A good idea is fine.{" "}
-            <span className="display-italic">A placed story</span> is better.
+            A 15-minute call.{" "}
+            <span className="display-italic">A measurable plan.</span>
           </h2>
           <p
             className="font-sans mt-6"
-            style={{ color: "var(--nu-ink)", fontSize: 17, lineHeight: 1.7, maxWidth: "44ch" }}
+            style={{
+              color: "var(--nu-ink)",
+              fontSize: 17,
+              lineHeight: 1.7,
+              maxWidth: "44ch",
+            }}
           >
-            Five steps. One accountable team. From editorial design to verified
-            placement — built for communications leaders who measure their work
-            in coverage, not in pitches sent.
+            Five steps. One accountable team. From AI audit to verified
+            placement and back to audit — built for leaders who measure earned
+            media in revenue, not in pitches sent.
           </p>
         </div>
 
@@ -77,7 +82,10 @@ const Methodology = () => {
                 <div className="flex items-baseline gap-6">
                   <span
                     className="display-italic"
-                    style={{ fontSize: 18, color: isActive ? "var(--nu-liberty)" : "var(--nu-muted)" }}
+                    style={{
+                      fontSize: 18,
+                      color: isActive ? "var(--nu-liberty)" : "var(--nu-muted)",
+                    }}
                   >
                     {s.num}
                   </span>
@@ -97,9 +105,10 @@ const Methodology = () => {
                     <div
                       style={{
                         overflow: "hidden",
-                        maxHeight: isActive ? 220 : 0,
+                        maxHeight: isActive ? 240 : 0,
                         opacity: isActive ? 1 : 0,
-                        transition: "max-height 0.5s ease, opacity 0.4s ease, margin 0.4s ease",
+                        transition:
+                          "max-height 0.5s ease, opacity 0.4s ease, margin 0.4s ease",
                         marginTop: isActive ? 16 : 0,
                       }}
                     >
@@ -120,9 +129,7 @@ const Methodology = () => {
               </div>
             );
           })}
-          <div
-            style={{ borderTop: "1px solid var(--nu-line)", marginTop: 8 }}
-          />
+          <div style={{ borderTop: "1px solid var(--nu-line)", marginTop: 8 }} />
         </div>
       </div>
     </section>

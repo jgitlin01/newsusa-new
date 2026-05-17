@@ -3,41 +3,38 @@ import { ArrowUpRight } from "lucide-react";
 
 const pillars = [
   {
-    eyebrow: "01 — Engaging Coverage",
-    title: "Choose meaningful placement",
+    eyebrow: "01 — Why this matters now",
+    title: "AI is the new front door",
     body:
-      "As an earned-media network, NewsUSA designs press programs engineered for audience attention — measured in real readership and broadcast minutes, not vanity impressions. We turn dense announcements into editorial-grade stories that local and trade outlets want to publish.",
-    cta: { label: "Capture attention", href: "#contact" },
+      "73% of B2B buyers now use AI tools in purchase research. 88% of businesses are invisible in ChatGPT — they simply don't appear when prospects ask for recommendations. That gap is where revenue is leaking, every month.",
+    cta: { label: "Run my AI audit", href: "#contact" },
   },
   {
-    eyebrow: "02 — Brand Image",
-    title: "Elevate your reputation",
+    eyebrow: "02 — Authority that travels",
+    title: "Earned coverage AI cites back",
     body:
-      "Standing out in a saturated news cycle requires more than a press release. We craft third-party-credible narratives, then deploy them through outlets your audience already trusts — strengthening recall, recognition, and the long-term equity of your brand.",
-    cta: { label: "Stand out", href: "#contact" },
+      "Our exclusive news-site network and 40+ years of content syndication infrastructure produce exactly the kind of authoritative third-party, AI-optimized, meta-tagged editorial presence that ChatGPT, Gemini, and Perplexity cite. Press release → newsroom → AI answer.",
+    cta: { label: "See the engine", href: "#services" },
   },
   {
-    eyebrow: "03 — Save Time",
+    eyebrow: "03 — Save Time, Compound Trust",
     title: "Reclaim your week",
     body:
-      "Stop chasing journalists. Our editorial, distribution, and audit teams handle the entire lifecycle of an earned-media campaign — from story design and copywriting through syndication and clip reporting — so your team can focus on what only your team can do.",
+      "Stop chasing journalists. Our editorial, distribution, audit, and AI optimization teams handle the entire lifecycle — from story design to syndication to AI-citation tracking — so your team focuses on what only your team can do.",
     cta: { label: "See how it works", href: "#methodology" },
   },
   {
-    eyebrow: "04 — Confidence",
-    title: "Show up ready",
+    eyebrow: "04 — Show Up Ready",
+    title: "Built for high-stakes moments",
     body:
-      "Make every high-stakes announcement a moment of clarity. Our editorial consultants, project leads, and account directors prepare you with placement strategy, expected reach, and rehearsed talking points so that the day-of feels routine, not risky.",
-    cta: { label: "Discover training", href: "#contact" },
+      "Every announcement should be a moment of clarity, not risk. Rick Smith's team has run 32,000+ campaigns for consumer, tech, finance, health, and professional brands — so launch day is the easiest day of your quarter.",
+    cta: { label: "Talk to Rick's team", href: "#contact" },
   },
 ];
 
 const Pillars = () => {
   return (
-    <section
-      className="section bg-pearl"
-      data-testid="section-pillars"
-    >
+    <section className="section bg-pearl" data-testid="section-pillars">
       <div className="container-nu">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-20">
           {pillars.map((p, i) => (
