@@ -1,0 +1,29 @@
+{
+  "summary": "End-to-end frontend testing of NewsUSA landing page (frontend-only, no backend). Verified page load, sticky nav transitions, scroll-controlled video hero with cue text + progress bar, all 8 service cards, 5 methodology steps (accordion-style expand/collapse), 13 FAQ items (shadcn Accordion radio behavior), 6 portfolio images, mission stats, testimonials, pillars, logo marquee, footer (20 links), smooth-scroll nav anchors, mailto contact CTA, fonts (Playfair Display + Work Sans), responsive at 1920/1024/414, reduced-motion fallback. 0 console errors. Core experience is solid.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Services section (hover state)", "issues": ["On service-card-0 in its hover/dark state (Heritage Indigo #122D51 background), the body copy text appears very low-contrast/dim against the dark background (see screenshot). Headline + Learn more remain readable, but the description paragraph fails contrast. Suggest using rgba(255,255,255,0.78) or similar for body copy on the dark hover state."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "OPTIONAL: Hero mobile-fallback gating. The detection (Hero.jsx lines 49-52) uses (prefersReduced || (isCoarse && isNarrow)). On Playwright headless (and any narrow desktop window without coarse pointer), only narrow-width does NOT trigger fallback, so hero-shell stays 280vh on a 414px window. Real touch devices hit both conditions, so production is fine, but consider switching to `prefersReduced || isCoarse || isNarrow` so any narrow viewport falls back. Also note the detection only runs once on mount (no resize listener) so resizing the window after load won't re-evaluate.",
+    "MINOR DESIGN: Improve contrast on service card body text in hover/dark state (text becomes hard to read on Heritage Indigo)."
+  ],
+  "critical_code_review_comments": [
+    "Hero fallback detection uses AND between isCoarse and isNarrow — could miss narrow-but-not-coarse cases (kiosks, narrow desktop windows). Consider OR.",
+    "Hero fallback effect has empty deps and no resize/orientationchange listener; viewport changes post-load are not re-evaluated. Acceptable for a landing page but worth noting.",
+    "All sections render cleanly, no _id leaks (frontend-only), 0 console errors observed across viewports.",
+    "Quote CTA mailto uses placeholder address 'hello@newsusa.example' — confirm/replace with real address before launch."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (all functional checks pass)"},
+  "seed_data_creation": "None (frontend-only build, no backend/DB).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Page lives at REACT_APP_BACKEND_URL root path. Key verified data-testids: primary-nav, nav-link-{services|how-we-work|coverage|about|faqs}, nav-cta-request-coverage, nav-mobile-toggle, nav-mobile-menu, hero-scroll-video, hero-video-element, hero-cue-0..2, hero-progress, hero-cta-explore, hero-cta-services, service-card-0..7, method-step-0..4, faq-item-0..12, portfolio-tile-*, footer-link-*. Hero video on Chromium uses the .webm source (VP9). Scroll-control verified: at ~30% hero-shell scroll currentTime≈1.78s (duration 8s); at ~70% currentTime≈4.65s. The currentTime lags slightly because of the rAF easing (diff*0.18) — this is intentional, not a bug. Mobile fallback DOES work when prefers-reduced-motion is set; it does NOT trigger on width-only mobile viewport in Playwright (no coarse pointer emulation). Smooth-scroll, hamburger toggle, FAQ accordion (single-open behavior), methodology step expand/collapse, service-card hover→dark all verified.",
+  "rca of the issue": "No blocking issues. Two minor improvement notes captured above (mobile fallback gating + service-card hover-state body text contrast)."
+}

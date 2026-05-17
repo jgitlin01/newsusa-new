@@ -1,0 +1,10 @@
+/* App-level overrides — most styles live in index.css */
+.App {
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+/* Prevent horizontal scroll without breaking position:sticky */
+html, body {
+    overflow-x: clip;
+}
