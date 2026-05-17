@@ -40,17 +40,24 @@ const Hero = () => {
   const [ready, setReady] = useState(false);
   const [fallback, setFallback] = useState(false);
 
-  // Detect reduced motion / coarse pointer (mobile) — fallback to autoplay loop.
+  // Detect reduced motion / coarse pointer (mobile) / narrow viewport — fallback to autoplay loop.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    const isNarrow = window.innerWidth < 768;
-    if (prefersReduced || (isCoarse && isNarrow)) {
-      setFallback(true);
-    }
+    const evaluate = () => {
+      const prefersReduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+      const isNarrow = window.innerWidth < 768;
+      setFallback(prefersReduced || isCoarse || isNarrow);
+    };
+    evaluate();
+    window.addEventListener("resize", evaluate);
+    window.addEventListener("orientationchange", evaluate);
+    return () => {
+      window.removeEventListener("resize", evaluate);
+      window.removeEventListener("orientationchange", evaluate);
+    };
   }, []);
 
   // Load metadata

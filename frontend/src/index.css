@@ -380,8 +380,8 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-4px);
     box-shadow: 0 20px 40px -20px rgba(18, 45, 81, 0.35);
 }
-.svc-card:hover h3,
-.svc-card:hover p { color: var(--nu-pearl); }
+.svc-card:hover h3 { color: var(--nu-pearl); }
+.svc-card:hover p { color: rgba(255, 255, 255, 0.82); }
 .svc-card:hover .svc-card__num { color: rgba(255,255,255,0.45); }
 .svc-card:hover .svc-card__arrow {
     transform: translateX(4px) translateY(-4px);
