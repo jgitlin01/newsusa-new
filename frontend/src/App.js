@@ -16,6 +16,7 @@ import Portfolio from "./components/Portfolio";
 import QuoteBanner from "./components/QuoteBanner";
 import FAQ from "./components/FAQ";
 import About from "./components/About";
+import Founder from "./components/Founder";
 import Footer from "./components/Footer";
 
 const Landing = () => {
@@ -32,6 +33,7 @@ const Landing = () => {
       <MediaKitBanner />
       <ComplementaryServices />
       <Portfolio />
+      <Founder />
       <QuoteBanner />
       <FAQ />
       <About />

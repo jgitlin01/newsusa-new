@@ -1,37 +1,39 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
 
-// Curated editorial-style photography from Unsplash.
+// Editorial graphics extracted from the NewsUSA pitch deck
+const PPT = `${process.env.PUBLIC_URL || ""}/media/ppt`;
+
 const items = [
   {
-    title: "Capitol Health Initiative",
-    tag: "Public Affairs",
-    img: "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=70",
+    title: "AI Authority Engine™ — Citation Optimization",
+    tag: "AI Discovery",
+    img: `${PPT}/08-ai.jpg`,
   },
   {
-    title: "Foundry Industries — Earnings Wire",
-    tag: "Corporate",
-    img: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=70",
+    title: "Results — $50M+ Tracked Sales Growth",
+    tag: "Case Study",
+    img: `${PPT}/04-graph.png`,
   },
   {
-    title: "Tribune Healthcare — Bilingual Rollout",
-    tag: "Spanish-Language",
-    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=70",
+    title: "What We Build — 5-Stage Visibility Stack",
+    tag: "Methodology",
+    img: `${PPT}/02-build.png`,
   },
   {
-    title: "Liberty Foundation — Policy Launch",
-    tag: "Government",
-    img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=70",
+    title: "Consumer Brand — National Editorial Rollout",
+    tag: "Consumer",
+    img: `${PPT}/10-consumer.jpg`,
   },
   {
-    title: "Atlas Energy — Regional Press Tour",
-    tag: "Broadcast",
-    img: "https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70",
+    title: "Why Clients Trust NewsUSA — 32,000+ Campaigns",
+    tag: "Network",
+    img: `${PPT}/03-trust.png`,
   },
   {
-    title: "Heritage Civic Group — Community Series",
-    tag: "Editorial",
-    img: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=70",
+    title: "Tech Brand — Pre-Launch Authority Campaign",
+    tag: "Tech",
+    img: `${PPT}/11-tech.jpg`,
   },
 ];
 
@@ -46,7 +48,9 @@ const Portfolio = () => {
       <div className="container-nu">
         <div className="grid grid-cols-12 gap-6 items-end mb-14">
           <div className="col-span-12 lg:col-span-8">
-            <div className="eyebrow" style={{ color: "#7FB7E8" }}>Coverage Portfolio</div>
+            <div className="eyebrow" style={{ color: "#7FB7E8" }}>
+              Coverage Portfolio
+            </div>
             <h2
               className="display mt-4"
               style={{
@@ -63,7 +67,11 @@ const Portfolio = () => {
             </h2>
           </div>
           <div className="col-span-12 lg:col-span-4 lg:text-right">
-            <a href="#contact" className="btn-pill btn-ghost-light" data-testid="portfolio-cta">
+            <a
+              href="#contact"
+              className="btn-pill btn-ghost-light"
+              data-testid="portfolio-cta"
+            >
               See all coverage <ArrowUpRight size={16} />
             </a>
           </div>
@@ -76,10 +84,13 @@ const Portfolio = () => {
               href="#contact"
               className="portfolio-tile group"
               data-testid={`portfolio-tile-${i}`}
+              style={{ background: "var(--nu-heritage)" }}
             >
               <img src={it.img} alt={it.title} loading="lazy" />
               <div className="portfolio-tile__overlay">
-                <div className="eyebrow" style={{ color: "#7FB7E8" }}>{it.tag}</div>
+                <div className="eyebrow" style={{ color: "#7FB7E8" }}>
+                  {it.tag}
+                </div>
                 <h3
                   className="display mt-2"
                   style={{

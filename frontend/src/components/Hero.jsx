@@ -3,14 +3,21 @@ import { ArrowDown } from "lucide-react";
 
 /**
  * Scroll-controlled video hero.
- * - The video element is sticky inside a tall shell.
- * - As user scrolls through the shell, video.currentTime is mapped to scroll progress.
- * - Synced text cue points reveal/hide based on progress.
- * - Reduced motion / mobile fallback: video autoplays loop muted.
+ *
+ * Three phases, mapped to scroll progress (0–1) through the hero shell:
+ *
+ *   [ Phase A — Video scrub ]   0.00 → 0.65   (video.currentTime: 0 → duration)
+ *   [ Buffer zone           ]   0.65 → 0.72   (video held at last frame, no headlines)
+ *   [ Phase B — Headlines   ]   0.72 → 1.00   (3 cues fade in/out one by one)
+ *
+ * Reduced motion / mobile fallback: video autoplays loop muted, cues are shown statically.
  */
 
 const VIDEO_URL_MP4 = `${process.env.PUBLIC_URL || ""}/media/newsusa-hero.mp4`;
 const VIDEO_URL_WEBM = `${process.env.PUBLIC_URL || ""}/media/newsusa-hero.webm`;
+
+const VIDEO_END = 0.65;
+const BUFFER_END = 0.72;
 
 const cues = [
   {
@@ -41,9 +48,7 @@ const Hero = () => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const evaluate = () => {
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const isCoarse = window.matchMedia("(pointer: coarse)").matches;
       const isNarrow = window.innerWidth < 768;
       setFallback(prefersReduced || isCoarse || isNarrow);
@@ -74,9 +79,8 @@ const Hero = () => {
     return () => v.removeEventListener("loadedmetadata", onMeta);
   }, [fallback]);
 
-  // Direct 1:1 scroll-to-frame sync (no rAF easing). Each scroll position maps
-  // exactly to a video frame so scrubbing feels physically connected to the
-  // scroll wheel / trackpad.
+  // Direct 1:1 scroll-to-frame sync. Video scrub is mapped to the first VIDEO_END
+  // portion of the scroll range, so the full video plays before any headlines appear.
   useEffect(() => {
     if (fallback) return;
     const v = videoRef.current;
@@ -93,9 +97,9 @@ const Hero = () => {
       setProgress(p);
       const d = duration || v.duration || 0;
       if (d > 0 && !Number.isNaN(d)) {
-        const target = Math.min(d - 0.001, p * d);
-        // Only assign if we have buffered enough — otherwise the assignment
-        // is a no-op and the browser shows the last decoded frame.
+        // Map scroll [0, VIDEO_END] → [0, d]. Beyond VIDEO_END, hold the last frame.
+        const videoP = Math.min(1, p / VIDEO_END);
+        const target = Math.min(d - 0.001, videoP * d);
         try {
           v.currentTime = target;
         } catch (e) {
@@ -118,11 +122,14 @@ const Hero = () => {
     };
   }, [duration, fallback]);
 
-  // active cue index
-  const cueIndex = Math.min(
-    cues.length - 1,
-    Math.floor(progress * cues.length * 0.999)
-  );
+  // Cue progress: only enters Phase B after the buffer zone.
+  const cueProgress = Math.max(0, (progress - BUFFER_END) / (1 - BUFFER_END));
+  const cueIndex = Math.min(cues.length - 1, Math.floor(cueProgress * cues.length * 0.999));
+  const cuesVisible = cueProgress > 0 || fallback;
+
+  // Video-progress for the progress bar's pre-cue phase
+  const videoProgress = Math.min(1, progress / VIDEO_END);
+  const inBuffer = progress > VIDEO_END && progress < BUFFER_END;
 
   return (
     <section
@@ -130,7 +137,7 @@ const Hero = () => {
       className="hero-shell"
       data-testid="hero-scroll-video"
       id="top"
-      style={{ height: fallback ? "100vh" : "320vh" }}
+      style={{ height: fallback ? "100vh" : "500vh" }}
     >
       <div className="hero-sticky">
         <video
@@ -148,10 +155,30 @@ const Hero = () => {
           <source src={VIDEO_URL_MP4} type="video/mp4" />
         </video>
 
-        <div className="hero-vignette" />
+        <div
+          className="hero-vignette"
+          style={{
+            opacity: cuesVisible ? 1 : 0.55,
+            transition: "opacity 0.8s ease",
+          }}
+        />
         <div className="hero-grain" />
 
-        {/* Top eyebrow + meta */}
+        {/* Cinematic darkening overlay that fades in during buffer & cues phase */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(180deg, rgba(17,24,33,0.55) 0%, rgba(17,24,33,0.2) 40%, rgba(17,24,33,0.85) 100%)",
+            opacity: cuesVisible ? 1 : 0,
+            transition: "opacity 0.8s ease",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
+        />
+
+        {/* Top eyebrow — brand chrome, always visible */}
         <div
           className="absolute top-[110px] left-0 right-0 px-6 md:px-14 z-[2] flex items-center justify-between"
           style={{ color: "rgba(255,255,255,0.85)" }}
@@ -173,16 +200,27 @@ const Hero = () => {
               fontSize: 11,
               letterSpacing: "0.28em",
               textTransform: "uppercase",
+              opacity: cuesVisible ? 0 : 0.85,
+              transition: "opacity 0.5s ease",
             }}
           >
-            Scroll to Explore
+            {inBuffer ? "—" : "Scroll to Explore"}
           </span>
         </div>
 
-        {/* Cue text */}
-        <div className="hero-content" data-testid="hero-cue-stack">
+        {/* Cue text — only renders during Phase B */}
+        <div
+          className="hero-content"
+          data-testid="hero-cue-stack"
+          style={{
+            opacity: cuesVisible ? 1 : 0,
+            transition: "opacity 0.6s ease",
+            pointerEvents: cuesVisible ? "auto" : "none",
+            zIndex: 2,
+          }}
+        >
           {cues.map((c, i) => {
-            const active = i === cueIndex;
+            const active = cuesVisible && i === cueIndex;
             return (
               <div
                 key={i}
@@ -191,8 +229,6 @@ const Hero = () => {
                   left: 0,
                   right: 0,
                   bottom: "12%",
-                  paddingLeft: "inherit",
-                  paddingRight: "inherit",
                   opacity: active ? 1 : 0,
                   transform: active
                     ? "translateY(0)"
@@ -219,7 +255,10 @@ const Hero = () => {
                     }}
                   >
                     {c.title[0]}{" "}
-                    <span className="display-italic" style={{ color: "#7FB7E8" }}>
+                    <span
+                      className="display-italic"
+                      style={{ color: "#7FB7E8" }}
+                    >
                       {c.title[1]}
                     </span>
                   </h1>
@@ -239,12 +278,24 @@ const Hero = () => {
           })}
         </div>
 
-        {/* Bottom-left chip */}
+        {/* Bottom-left CTAs — fade in with cues */}
         <div
           className="absolute z-[3] flex items-center gap-3"
-          style={{ left: 24, bottom: 64, color: "#FFFFFF" }}
+          style={{
+            left: 24,
+            bottom: 64,
+            color: "#FFFFFF",
+            opacity: cuesVisible ? 1 : 0,
+            transform: cuesVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+            pointerEvents: cuesVisible ? "auto" : "none",
+          }}
         >
-          <a href="#mission" className="btn-pill btn-primary" data-testid="hero-cta-explore">
+          <a
+            href="#mission"
+            className="btn-pill btn-primary"
+            data-testid="hero-cta-explore"
+          >
             Explore the Network
           </a>
           <a
@@ -256,16 +307,30 @@ const Hero = () => {
           </a>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar — uses video progress until Phase B, then full scroll progress */}
         <div className="hero-progress" data-testid="hero-progress">
           <div
             className="hero-progress__bar"
-            style={{ transform: `scaleX(${Math.max(0.02, progress)})` }}
+            style={{
+              transform: `scaleX(${Math.max(
+                0.02,
+                cuesVisible ? progress : videoProgress * VIDEO_END
+              )})`,
+            }}
           />
         </div>
 
-        <div className="scroll-hint hidden md:block">
-          <ArrowDown size={12} style={{ transform: "rotate(180deg)", marginBottom: 6 }} />
+        <div
+          className="scroll-hint hidden md:block"
+          style={{
+            opacity: cuesVisible ? 0 : 0.7,
+            transition: "opacity 0.5s ease",
+          }}
+        >
+          <ArrowDown
+            size={12}
+            style={{ transform: "rotate(180deg)", marginBottom: 6 }}
+          />
           Scroll
         </div>
       </div>
