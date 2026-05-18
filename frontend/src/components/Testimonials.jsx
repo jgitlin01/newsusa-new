@@ -1,4 +1,5 @@
 import React from "react";
+import useReveal from "../hooks/useReveal";
 
 const testimonials = [
   {
@@ -46,6 +47,7 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const [headerRef, headerVisible] = useReveal({ threshold: 0.15 });
   const row = [...testimonials, ...testimonials];
   return (
     <section
@@ -53,12 +55,17 @@ const Testimonials = () => {
       style={{ background: "var(--nu-space)" }}
       data-testid="section-testimonials"
     >
-      <div className="container-nu mb-20 lg:mb-28 grid grid-cols-12 gap-6 items-end">
+      <div
+        ref={headerRef}
+        className="container-nu mb-20 lg:mb-28 grid grid-cols-12 gap-6 items-end"
+      >
         <div className="col-span-12 lg:col-span-7">
-          <div className="eyebrow">Voices on the wire</div>
+          <div className={`eyebrow reveal ${headerVisible ? "reveal--visible" : ""}`}>
+            Voices on the wire
+          </div>
           <h2
-            className="display mt-4"
-            style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}
+            className={`display mt-4 reveal reveal-d1 ${headerVisible ? "reveal--visible" : ""}`}
+            style={{ fontSize: "clamp(52px, 6vw, 90px)", lineHeight: 1 }}
           >
             Trusted by leading{" "}
             <span className="display-italic">communicators</span>.
@@ -66,8 +73,8 @@ const Testimonials = () => {
         </div>
         <div className="col-span-12 lg:col-span-5 lg:text-right">
           <p
-            className="font-sans"
-            style={{ color: "var(--nu-muted)", fontSize: 16, maxWidth: 460, marginLeft: "auto" }}
+            className={`font-sans reveal reveal-d2 ${headerVisible ? "reveal--visible" : ""}`}
+            style={{ color: "var(--nu-muted)", fontSize: 20, maxWidth: 460, marginLeft: "auto" }}
           >
             Four decades of earned coverage for consumer, tech, finance, health,
             and professional brands. Hear it from CEOs, agency principals, and
@@ -81,28 +88,36 @@ const Testimonials = () => {
           {row.map((t, i) => (
             <article
               key={`${t.brand}-${i}`}
-              className="shrink-0 bg-pearl border"
+              className="shrink-0 bg-pearl testimonial-card"
               style={{
-                borderColor: "var(--nu-line)",
                 width: 420,
                 padding: 32,
                 borderRadius: 4,
               }}
               data-testid={`testimonial-card-${i}`}
             >
+              {/* Decorative quote mark */}
+              <div
+                className="decorative-quote"
+                style={{ fontSize: 120, top: -10, right: 16 }}
+              >
+                "
+              </div>
               <div className="eyebrow mb-5" style={{ color: "var(--nu-union)" }}>
                 {t.brand}
               </div>
               <p
                 className="font-serif"
                 style={{
-                  fontSize: 18,
+                  fontSize: 22,
                   lineHeight: 1.55,
                   color: "var(--nu-heritage)",
                   fontWeight: 500,
+                  position: "relative",
+                  zIndex: 1,
                 }}
               >
-                “{t.quote}”
+                {"\u201C"}{t.quote}{"\u201D"}
               </p>
               <div className="mt-8 pt-6 border-t" style={{ borderColor: "var(--nu-line)" }}>
                 <div className="font-sans font-semibold" style={{ color: "var(--nu-heritage)" }}>

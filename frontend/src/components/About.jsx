@@ -1,20 +1,25 @@
 import React from "react";
+import useReveal from "../hooks/useReveal";
 
 const About = () => {
+  const [ref, visible] = useReveal({ threshold: 0.1 });
+  const r = (d) => `reveal ${visible ? "reveal--visible" : ""} reveal-d${d}`;
+
   return (
-    <section id="about" className="section bg-pearl" data-testid="section-about">
+    <section ref={ref} id="about" className="section bg-pearl bg-grain-light" data-testid="section-about">
       <div className="container-nu max-w-4xl">
-        <div className="eyebrow">About NewsUSA</div>
+        <div className={`section-label mb-2 ${r(1)}`}>006 / About</div>
+        <div className={`eyebrow ${r(1)}`}>About NewsUSA</div>
         <h2
-          className="display mt-4"
-          style={{ fontSize: "clamp(36px, 4.4vw, 60px)", lineHeight: 1.05 }}
+          className={`display mt-4 ${r(2)}`}
+          style={{ fontSize: "clamp(45px, 5.5vw, 75px)", lineHeight: 1.05 }}
         >
           Founded by Rick Smith in 1987. 32,000+ campaigns. One trusted network.
         </h2>
 
         <div
-          className="grid grid-cols-1 gap-6 mt-10 font-sans"
-          style={{ fontSize: 16, lineHeight: 1.75, color: "var(--nu-ink)" }}
+          className={`grid grid-cols-1 gap-6 mt-10 font-sans ${r(3)}`}
+          style={{ fontSize: 20, lineHeight: 1.75, color: "var(--nu-ink)" }}
         >
           <p>
             NewsUSA is the earned-media network founded by Rick Smith in 1987.
@@ -24,7 +29,7 @@ const About = () => {
             the AI engines making today's purchase decisions.
           </p>
 
-          <h3 className="display mt-4" style={{ fontSize: 26, fontWeight: 700 }}>
+          <h3 className="display mt-4" style={{ fontSize: 33, fontWeight: 700 }}>
             From the wire to the AI answer
           </h3>
           <p>
@@ -42,7 +47,7 @@ const About = () => {
             cite — and modern buyers trust.
           </p>
 
-          <h3 className="display mt-4" style={{ fontSize: 26, fontWeight: 700 }}>
+          <h3 className="display mt-4" style={{ fontSize: 33, fontWeight: 700 }}>
             Why Rick Smith built NewsUSA
           </h3>
           <p>
@@ -59,7 +64,7 @@ const About = () => {
             departments, and the agencies that serve them.
           </p>
 
-          <h3 className="display mt-4" style={{ fontSize: 26, fontWeight: 700 }}>
+          <h3 className="display mt-4" style={{ fontSize: 33, fontWeight: 700 }}>
             What our network delivers
           </h3>
           <p>
@@ -72,7 +77,7 @@ const About = () => {
             clients in every category we serve.
           </p>
 
-          <h3 className="display mt-4" style={{ fontSize: 26, fontWeight: 700 }}>
+          <h3 className="display mt-4" style={{ fontSize: 33, fontWeight: 700 }}>
             Start with a 15-minute conversation
           </h3>
           <p>

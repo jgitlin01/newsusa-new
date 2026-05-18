@@ -18,17 +18,17 @@ const cues = [
   {
     eyebrow: "AI is rewriting buying decisions",
     title: ["88%", "invisible"],
-    sub: "of businesses don't appear when prospects ask AI for recommendations.",
+    sub: "of businesses don't appear when prospects ask AI for recommendations. Your competitors are already building authority. Are you?",
   },
   {
-    eyebrow: "Earned Media, AI-Optimized",
-    title: ["Press coverage that", "AI cites back"],
-    sub: "Editorial placements that authoritatively appear in newspapers, on TV, online — and in the AI answers your buyers are already reading.",
+    eyebrow: "AI Authority Engine™",
+    title: ["Press that", "AI cites back"],
+    sub: "Editorial placements engineered with the trust signals AI models rely on — appearing in newspapers, TV, and online, and surfaced when buyers ask AI who to trust.",
   },
   {
-    eyebrow: "Founded by Rick Smith — Since 1987",
-    title: ["32,000+ campaigns.", "One network."],
-    sub: "NewsUSA puts your brand in front of the buyers — and the AI models — that decide.",
+    eyebrow: "Be the source AI cites",
+    title: ["The only", "AI Authority Network™"],
+    sub: "40+ years of proven infrastructure. End-to-end campaigns that engineer real authority — not just visibility. The trusted source AI surfaces to your buyers.",
   },
 ];
 
@@ -100,7 +100,7 @@ const HeroCues = () => {
               </div>
               <h2
                 className="display mt-3"
-                style={{ color: "var(--nu-pearl)", fontSize: "clamp(40px, 8vw, 96px)", lineHeight: 0.95 }}
+                style={{ color: "var(--nu-pearl)", fontSize: "clamp(52px, 9vw, 120px)", lineHeight: 0.95 }}
               >
                 {c.title[0]}{" "}
                 <span className="display-italic" style={{ color: "#7FB7E8" }}>
@@ -109,18 +109,20 @@ const HeroCues = () => {
               </h2>
               <p
                 className="font-sans mt-5"
-                style={{ color: "rgba(255,255,255,0.78)", maxWidth: "44ch", fontSize: 17 }}
+                style={{ color: "rgba(255,255,255,0.78)", maxWidth: "44ch", fontSize: 21 }}
               >
                 {c.sub}
               </p>
             </div>
           ))}
           <a
-            href="#mission"
+            href="https://calendly.com/rsmith-29/15min?month=2025-05"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-pill btn-primary self-start mt-6"
             data-testid="hero-cues-cta"
           >
-            Explore the Network <ArrowUpRight size={16} />
+            Book a Discovery Call <ArrowUpRight size={16} />
           </a>
         </div>
       </section>
@@ -170,7 +172,7 @@ const HeroCues = () => {
           <span
             className="font-sans"
             style={{
-              fontSize: 11,
+              fontSize: 14,
               letterSpacing: "0.28em",
               textTransform: "uppercase",
               fontWeight: 500,
@@ -182,11 +184,11 @@ const HeroCues = () => {
           <span
             className="hidden md:inline font-sans"
             style={{
-              fontSize: 11,
+              fontSize: 14,
               letterSpacing: "0.28em",
               textTransform: "uppercase",
               opacity: cuesActive ? 1 : 0.45,
-              transition: "opacity 0.5s ease",
+              transition: "opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           >
             {cuesActive
@@ -195,7 +197,7 @@ const HeroCues = () => {
           </span>
         </div>
 
-        {/* Cue stack */}
+        {/* Cue stack — per-element staggered entrance */}
         <div
           style={{
             position: "absolute",
@@ -208,6 +210,22 @@ const HeroCues = () => {
         >
           {cues.map((c, i) => {
             const active = cuesActive && i === cueIndex;
+            const exitUp = cuesActive && i < cueIndex;
+            const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+            const childStyle = (delayMs) => ({
+              opacity: active ? 1 : 0,
+              transform: active
+                ? "translateY(0)"
+                : exitUp
+                ? "translateY(-14px)"
+                : "translateY(20px)",
+              transition: active
+                ? `opacity 0.5s ${ease} ${delayMs}ms, transform 0.55s ${ease} ${delayMs}ms`
+                : `opacity 0.3s ${ease}, transform 0.35s ${ease}`,
+              willChange: "opacity, transform",
+            });
+
             return (
               <div
                 key={i}
@@ -216,29 +234,28 @@ const HeroCues = () => {
                   left: 0,
                   right: 0,
                   bottom: "12%",
-                  opacity: active ? 1 : 0,
-                  transform: active
-                    ? "translateY(0)"
-                    : i < cueIndex
-                    ? "translateY(-30px)"
-                    : "translateY(30px)",
-                  transition: "opacity 0.6s ease, transform 0.7s ease",
-                  willChange: "opacity, transform",
+                  pointerEvents: active ? "auto" : "none",
+                  zIndex: active ? 1 : 0,
                 }}
                 data-testid={`hero-cue-${i}`}
               >
                 <div className="container-nu" style={{ padding: 0 }}>
                   <div
                     className="eyebrow"
-                    style={{ color: "#7FB7E8", marginBottom: 18 }}
+                    style={{
+                      ...childStyle(0),
+                      color: "#7FB7E8",
+                      marginBottom: 18,
+                    }}
                   >
                     {c.eyebrow}
                   </div>
                   <h2
                     className="display"
                     style={{
+                      ...childStyle(80),
                       color: "#FFFFFF",
-                      fontSize: "clamp(48px, 9vw, 144px)",
+                      fontSize: "clamp(60px, 10vw, 160px)",
                       lineHeight: 0.92,
                       maxWidth: "16ch",
                     }}
@@ -254,8 +271,9 @@ const HeroCues = () => {
                   <p
                     className="font-sans mt-6"
                     style={{
+                      ...childStyle(160),
                       color: "rgba(255,255,255,0.78)",
-                      fontSize: "clamp(15px, 1.5vw, 19px)",
+                      fontSize: "clamp(19px, 1.75vw, 24px)",
                       maxWidth: "44ch",
                     }}
                   >
@@ -276,23 +294,27 @@ const HeroCues = () => {
             color: "#FFFFFF",
             opacity: cuesActive ? 1 : 0,
             transform: cuesActive ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.6s ease, transform 0.6s ease",
+            transition: "opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
             pointerEvents: cuesActive ? "auto" : "none",
           }}
         >
           <a
-            href="#mission"
+            href="https://calendly.com/rsmith-29/15min?month=2025-05"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-pill btn-primary"
             data-testid="hero-cta-explore"
           >
-            Explore the Network
+            Book a Discovery Call
           </a>
           <a
-            href="#services"
+            href="https://calendly.com/rsmith-29/15min?month=2025-05"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-pill btn-ghost-light hidden sm:inline-flex"
             data-testid="hero-cta-services"
           >
-            Our Services
+            See Our Placements
           </a>
         </div>
 
@@ -306,13 +328,15 @@ const HeroCues = () => {
             <span
               key={i}
               style={{
+                display: "block",
                 width: i === cueIndex && cuesActive ? 24 : 8,
                 height: 2,
+                borderRadius: 1,
                 background:
                   i === cueIndex && cuesActive
                     ? "var(--nu-pearl)"
                     : "rgba(255,255,255,0.25)",
-                transition: "width 0.4s ease, background 0.4s ease",
+                transition: "width 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.35s ease",
               }}
             />
           ))}

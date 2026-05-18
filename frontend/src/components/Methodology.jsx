@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import useReveal from "../hooks/useReveal";
 
 const steps = [
   {
@@ -35,27 +36,47 @@ const steps = [
 
 const Methodology = () => {
   const [active, setActive] = useState(0);
+  const [headerRef, headerVisible] = useReveal({ threshold: 0.15 });
+  const [timelineRef, timelineVisible] = useReveal({ threshold: 0.1 });
+  const stepsContainerRef = useRef(null);
+  const [lineHeight, setLineHeight] = useState(0);
+
+  // Calculate timeline progress line height based on active step
+  useEffect(() => {
+    if (!stepsContainerRef.current) return;
+    const children = stepsContainerRef.current.children;
+    if (!children[active]) return;
+    const containerTop = stepsContainerRef.current.getBoundingClientRect().top;
+    const activeEl = children[active];
+    const activeTop = activeEl.getBoundingClientRect().top;
+    const activeHeight = activeEl.offsetHeight;
+    setLineHeight(activeTop - containerTop + activeHeight * 0.3);
+  }, [active]);
+
+  const r = (vis, d) => `reveal ${vis ? "reveal--visible" : ""} reveal-d${d}`;
+
   return (
     <section
       id="methodology"
-      className="section bg-pearl"
+      className="section bg-pearl bg-grain-light"
       data-testid="section-methodology"
     >
       <div className="container-nu grid grid-cols-12 gap-10 lg:gap-16">
-        <div className="col-span-12 lg:col-span-5">
-          <div className="eyebrow">How it starts</div>
+        <div ref={headerRef} className="col-span-12 lg:col-span-5">
+          <div className={`section-label mb-2 ${r(headerVisible, 1)}`}>003 / Process</div>
+          <div className={`eyebrow ${r(headerVisible, 1)}`}>How it starts</div>
           <h2
-            className="display mt-4"
-            style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}
+            className={`display mt-4 ${r(headerVisible, 2)}`}
+            style={{ fontSize: "clamp(52px, 6vw, 90px)", lineHeight: 1 }}
           >
             A 15-minute call.{" "}
             <span className="display-italic">A measurable plan.</span>
           </h2>
           <p
-            className="font-sans mt-6"
+            className={`font-sans mt-6 ${r(headerVisible, 3)}`}
             style={{
               color: "var(--nu-ink)",
-              fontSize: 17,
+              fontSize: 21,
               lineHeight: 1.7,
               maxWidth: "44ch",
             }}
@@ -66,70 +87,83 @@ const Methodology = () => {
           </p>
         </div>
 
-        <div className="col-span-12 lg:col-span-7">
-          {steps.map((s, i) => {
-            const isActive = active === i;
-            return (
-              <div
-                key={s.num}
-                className="method-tab"
-                data-active={isActive}
-                onClick={() => setActive(i)}
-                onMouseEnter={() => setActive(i)}
-                data-testid={`method-step-${i}`}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="flex items-baseline gap-6">
-                  <span
-                    className="display-italic"
+        <div
+          ref={timelineRef}
+          className={`col-span-12 lg:col-span-7 ${r(timelineVisible, 2)}`}
+        >
+          <div className="method-timeline" ref={stepsContainerRef}>
+            {/* Animated progress line */}
+            <div
+              className="method-timeline__line"
+              style={{ height: timelineVisible ? lineHeight : 0 }}
+            />
+
+            {steps.map((s, i) => {
+              const isActive = active === i;
+              return (
+                <div
+                  key={s.num}
+                  className="relative pb-6 pt-5"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setActive(i)}
+                  onMouseEnter={() => setActive(i)}
+                  data-testid={`method-step-${i}`}
+                >
+                  {/* Timeline dot */}
+                  <div
+                    className={`method-dot ${isActive ? "method-dot--active" : ""}`}
+                    style={{ top: 24 }}
+                  />
+
+                  <h3
+                    className="display flex items-baseline gap-4"
                     style={{
-                      fontSize: 18,
-                      color: isActive ? "var(--nu-liberty)" : "var(--nu-muted)",
+                      fontSize: "clamp(27px, 2.8vw, 42px)",
+                      lineHeight: 1.15,
+                      color: isActive ? "var(--nu-heritage)" : "var(--nu-muted)",
+                      transition: "color 0.35s var(--ease-out-quint)",
+                      fontWeight: 700,
                     }}
                   >
-                    {s.num}
-                  </span>
-                  <div className="flex-1">
-                    <h3
-                      className="display"
+                    <span
+                      className="display-italic"
                       style={{
-                        fontSize: "clamp(22px, 2.4vw, 34px)",
-                        lineHeight: 1.15,
-                        color: isActive ? "var(--nu-heritage)" : "var(--nu-muted)",
-                        transition: "color 0.3s ease",
-                        fontWeight: 700,
+                        fontSize: 50,
+                        color: isActive ? "var(--nu-liberty)" : "var(--nu-muted)",
+                        transition: "color 0.35s ease",
+                        opacity: isActive ? 1 : 0.5,
                       }}
                     >
-                      {s.title}
-                    </h3>
-                    <div
+                      {s.num}
+                    </span>
+                    {s.title}
+                  </h3>
+                  <div
+                    style={{
+                      overflow: "hidden",
+                      maxHeight: isActive ? 240 : 0,
+                      opacity: isActive ? 1 : 0,
+                      transition:
+                        "max-height 0.55s var(--ease-out-quint), opacity 0.45s var(--ease-out-quint), margin 0.45s var(--ease-out-quint)",
+                      marginTop: isActive ? 16 : 0,
+                    }}
+                  >
+                    <p
+                      className="font-sans"
                       style={{
-                        overflow: "hidden",
-                        maxHeight: isActive ? 240 : 0,
-                        opacity: isActive ? 1 : 0,
-                        transition:
-                          "max-height 0.5s ease, opacity 0.4s ease, margin 0.4s ease",
-                        marginTop: isActive ? 16 : 0,
+                        color: "var(--nu-ink)",
+                        fontSize: 20,
+                        lineHeight: 1.7,
+                        maxWidth: "58ch",
                       }}
                     >
-                      <p
-                        className="font-sans"
-                        style={{
-                          color: "var(--nu-ink)",
-                          fontSize: 16,
-                          lineHeight: 1.7,
-                          maxWidth: "58ch",
-                        }}
-                      >
-                        {s.body}
-                      </p>
-                    </div>
+                      {s.body}
+                    </p>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-          <div style={{ borderTop: "1px solid var(--nu-line)", marginTop: 8 }} />
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

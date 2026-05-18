@@ -1,4 +1,5 @@
 import React from "react";
+import useReveal from "../hooks/useReveal";
 
 const brands = [
   "Associated Press",
@@ -16,15 +17,17 @@ const brands = [
 ];
 
 const LogoMarquee = () => {
+  const [ref, visible] = useReveal({ threshold: 0.2 });
   const row = [...brands, ...brands];
   return (
     <section
-      className="py-12 md:py-16 border-y bg-pearl"
+      ref={ref}
+      className={`py-12 md:py-16 border-y bg-pearl reveal ${visible ? "reveal--visible" : ""}`}
       style={{ borderColor: "var(--nu-line)" }}
       data-testid="logo-marquee"
     >
       <div className="container-nu mb-8 flex items-center justify-between flex-wrap gap-3">
-        <div className="eyebrow">As featured & syndicated through</div>
+        <div className="eyebrow">As featured &amp; syndicated through</div>
         <div className="font-sans text-sm" style={{ color: "var(--nu-muted)" }}>
           10,000+ outlets • 50 states • 35+ years
         </div>

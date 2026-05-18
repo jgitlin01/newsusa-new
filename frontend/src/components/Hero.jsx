@@ -1,166 +1,177 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ArrowDown } from "lucide-react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 /**
- * Scroll-controlled video hero — VIDEO ONLY.
+ * Canvas-based scroll-driven hero.
  *
- * - Hero shell is ~280vh tall.
- * - Inner sticky video pins for the full shell, scrubbing
- *   video.currentTime directly from scroll progress (1:1).
- * - At the end of the shell, the sticky releases naturally and
- *   the video scrolls UP out of view. No headlines overlap the
- *   video — they live in their own section below this one.
- * - Reduced-motion / mobile fallback: autoplay loop muted.
+ * 192 WebP frames pre-loaded into Image objects, drawn to <canvas>
+ * on scroll. This eliminates the choppiness caused by video.currentTime
+ * scrubbing, which browsers rate-limit and buffer unpredictably.
+ *
+ * - 400vh shell gives full video playback before any other content.
+ * - No text overlaid — pure cinematic scroll experience.
+ * - Frame index advances 1:1 with scroll progress.
  */
 
-const VIDEO_URL_MP4 = `${process.env.PUBLIC_URL || ""}/media/newsusa-hero.mp4`;
-const VIDEO_URL_WEBM = `${process.env.PUBLIC_URL || ""}/media/newsusa-hero.webm`;
+const FRAME_COUNT = 192;
+const FRAME_BASE = `${process.env.PUBLIC_URL || ""}/frames/frame_`;
 
 const Hero = () => {
   const shellRef = useRef(null);
-  const videoRef = useRef(null);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [fallback, setFallback] = useState(false);
+  const canvasRef = useRef(null);
+  const framesRef = useRef(new Array(FRAME_COUNT).fill(null));
+  const currentFrameRef = useRef(0);
+  const progressBarRef = useRef(null);
+  const ctxRef = useRef(null);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const evaluate = () => {
-      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-      const isNarrow = window.innerWidth < 768;
-      setFallback(prefersReduced || isCoarse || isNarrow);
-    };
-    evaluate();
-    window.addEventListener("resize", evaluate);
-    window.addEventListener("orientationchange", evaluate);
-    return () => {
-      window.removeEventListener("resize", evaluate);
-      window.removeEventListener("orientationchange", evaluate);
-    };
+  // Stable draw — reads only refs, never triggers re-renders
+  const drawFrame = useCallback((index) => {
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (!canvas || !ctx) return;
+    const img = framesRef.current[index];
+    if (!img) return;
+
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const iw = img.naturalWidth;
+    const ih = img.naturalHeight;
+
+    // Cover mode — fills viewport, no letterbox
+    const scale = Math.max(cw / iw, ch / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+
+    ctx.fillStyle = "#111821";
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
   }, []);
 
+  // Size canvas to viewport * devicePixelRatio for crisp rendering
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctxRef.current = canvas.getContext("2d");
+    drawFrame(currentFrameRef.current);
+  }, [drawFrame]);
+
+  // Initial resize + listen
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const onMeta = () => {
-      setDuration(v.duration || 0);
-      if (fallback) {
-        v.loop = true;
-        v.muted = true;
-        v.play().catch(() => {});
-      }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, [resizeCanvas]);
+
+  // Two-phase preload: first frame immediately, rest in background
+  useEffect(() => {
+    const imgs = framesRef.current;
+
+    const loadOne = (i) => {
+      const img = new Image();
+      const num = String(i + 1).padStart(4, "0");
+      img.src = `${FRAME_BASE}${num}.webp`;
+      img.onload = () => {
+        imgs[i] = img;
+        if (i === 0) drawFrame(0);
+      };
     };
-    if (v.readyState >= 1) onMeta();
-    v.addEventListener("loadedmetadata", onMeta);
-    return () => v.removeEventListener("loadedmetadata", onMeta);
-  }, [fallback]);
 
+    // Frame 0 first for immediate paint
+    loadOne(0);
+    for (let i = 1; i < FRAME_COUNT; i++) loadOne(i);
+  }, [drawFrame]);
+
+  // Scroll → frame index → draw
   useEffect(() => {
-    if (fallback) return;
-    const v = videoRef.current;
     const shell = shellRef.current;
-    if (!v || !shell) return;
+    if (!shell) return;
+    let rafId = null;
 
-    let rafPending = false;
     const update = () => {
-      rafPending = false;
+      rafId = null;
       const rect = shell.getBoundingClientRect();
       const total = shell.offsetHeight - window.innerHeight;
       const scrolled = Math.min(Math.max(-rect.top, 0), total);
-      const p = total > 0 ? scrolled / total : 0;
-      setProgress(p);
-      const d = duration || v.duration || 0;
-      if (d > 0 && !Number.isNaN(d)) {
-        const target = Math.min(d - 0.001, p * d);
-        try {
-          v.currentTime = target;
-        } catch (e) {
-          /* ignore */
-        }
+      const progress = total > 0 ? scrolled / total : 0;
+
+      const index = Math.min(FRAME_COUNT - 1, Math.floor(progress * FRAME_COUNT));
+      if (index !== currentFrameRef.current) {
+        currentFrameRef.current = index;
+        drawFrame(index);
+      }
+
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${Math.max(0.015, progress)})`;
       }
     };
 
     const onScroll = () => {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(update);
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
     };
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [duration, fallback]);
+  }, [drawFrame]);
 
   return (
     <section
       ref={shellRef}
       className="hero-shell"
-      data-testid="hero-scroll-video"
       id="top"
-      style={{ height: fallback ? "100vh" : "300vh" }}
+      style={{ height: "400vh" }}
     >
       <div className="hero-sticky">
-        <video
-          ref={videoRef}
-          className="hero-video"
-          muted
-          playsInline
-          preload="auto"
-          autoPlay={fallback}
-          loop={fallback}
-          poster=""
-          data-testid="hero-video-element"
-        >
-          <source src={VIDEO_URL_WEBM} type="video/webm" />
-          <source src={VIDEO_URL_MP4} type="video/mp4" />
-        </video>
+        <canvas
+          ref={canvasRef}
+          aria-hidden="true"
+          style={{ position: "absolute", inset: 0, display: "block" }}
+        />
 
-        <div className="hero-vignette" style={{ opacity: 0.55 }} />
+        {/* Subtle bottom vignette so progress bar reads cleanly */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(to top, rgba(17,24,33,0.55) 0%, transparent 18%)",
+            pointerEvents: "none",
+          }}
+        />
+
         <div className="hero-grain" />
 
-        {/* Brand chrome — minimal, never competes with H1 content */}
-        <div
-          className="absolute top-[110px] left-0 right-0 px-6 md:px-14 z-[2] flex items-center justify-between"
-          style={{ color: "rgba(255,255,255,0.85)" }}
-        >
-          <span
-            className="font-sans"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              fontWeight: 500,
-            }}
-          >
-            <span style={{ color: "#0068C2" }}>●</span> &nbsp; Earned Media Network — Est. 1987
-          </span>
-          <span
-            className="hidden md:inline font-sans"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              opacity: 0.85,
-            }}
-          >
-            Scroll to Explore
-          </span>
-        </div>
-
-        {/* Progress bar */}
-        <div className="hero-progress" data-testid="hero-progress">
+        {/* Scroll progress bar */}
+        <div className="hero-progress">
           <div
+            ref={progressBarRef}
             className="hero-progress__bar"
-            style={{ transform: `scaleX(${Math.max(0.02, progress)})` }}
+            style={{ transform: "scaleX(0.015)" }}
           />
         </div>
 
+        {/* Scroll hint */}
         <div className="scroll-hint hidden md:block">
-          <ArrowDown size={12} style={{ transform: "rotate(180deg)", marginBottom: 6 }} />
+          <span
+            style={{
+              display: "block",
+              marginBottom: 6,
+              fontSize: 10,
+              letterSpacing: "0.15em",
+            }}
+          >
+            ↓
+          </span>
           Scroll
         </div>
       </div>

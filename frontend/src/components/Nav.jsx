@@ -50,11 +50,13 @@ const Nav = () => {
 
         <div className="flex items-center gap-3">
           <a
-            href="#contact"
+            href="https://calendly.com/rsmith-29/15min?month=2025-05"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-pill btn-primary hidden sm:inline-flex"
             data-testid="nav-cta-request-coverage"
           >
-            Free AI Audit
+            Book Discovery Call
             <ArrowUpRight size={16} />
           </a>
           <button
@@ -94,12 +96,14 @@ const Nav = () => {
               </a>
             ))}
             <a
-              href="#contact"
+              href="https://calendly.com/rsmith-29/15min?month=2025-05"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="btn-pill btn-primary self-start mt-2"
               data-testid="nav-mobile-cta"
             >
-              Free AI Audit <ArrowUpRight size={16} />
+              Book Discovery Call <ArrowUpRight size={16} />
             </a>
           </div>
         </div>

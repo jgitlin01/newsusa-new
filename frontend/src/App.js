@@ -9,11 +9,13 @@ import LogoMarquee from "./components/LogoMarquee";
 import Mission from "./components/Mission";
 import Testimonials from "./components/Testimonials";
 import Pillars from "./components/Pillars";
+import TextMarquee from "./components/TextMarquee";
 import Services from "./components/Services";
 import Methodology from "./components/Methodology";
 import MediaKitBanner from "./components/MediaKitBanner";
 import ComplementaryServices from "./components/ComplementaryServices";
 import Portfolio from "./components/Portfolio";
+import BigBrands from "./components/BigBrands";
 import QuoteBanner from "./components/QuoteBanner";
 import FAQ from "./components/FAQ";
 import About from "./components/About";
@@ -30,11 +32,13 @@ const Landing = () => {
       <Mission />
       <Testimonials />
       <Pillars />
+      <TextMarquee />
       <Services />
       <Methodology />
       <MediaKitBanner />
       <ComplementaryServices />
       <Portfolio />
+      <BigBrands />
       <Founder />
       <QuoteBanner />
       <FAQ />
