@@ -21,6 +21,7 @@ const Hero = () => {
   const framesRef = useRef(new Array(FRAME_COUNT).fill(null));
   const currentFrameRef = useRef(0);
   const progressBarRef = useRef(null);
+  const logoOverlayRef = useRef(null);
   const ctxRef = useRef(null);
 
   // Stable draw — reads only refs, never triggers re-renders
@@ -107,6 +108,12 @@ const Hero = () => {
       if (progressBarRef.current) {
         progressBarRef.current.style.transform = `scaleX(${Math.max(0.015, progress)})`;
       }
+
+      // Logo fades out over first 6% of hero scroll (≈ 24vh)
+      if (logoOverlayRef.current) {
+        const logoOpacity = Math.max(0, 1 - progress / 0.06);
+        logoOverlayRef.current.style.opacity = logoOpacity;
+      }
     };
 
     const onScroll = () => {
@@ -137,6 +144,73 @@ const Hero = () => {
           aria-hidden="true"
           style={{ position: "absolute", inset: 0, display: "block" }}
         />
+
+        {/* NewsUSA logo — visible on load, fades out on first scroll */}
+        <div
+          ref={logoOverlayRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+            zIndex: 10,
+          }}
+        >
+          {/* N-mark icon */}
+          <svg viewBox="0 0 88 88" width="88" height="88" aria-hidden="true" style={{ marginBottom: 20 }}>
+            <rect x="4" y="4" width="80" height="80" rx="12" fill="rgba(255,255,255,0.12)" />
+            <rect x="4" y="4" width="80" height="80" rx="12" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+            <text
+              x="50%"
+              y="60%"
+              textAnchor="middle"
+              fontFamily="Playfair Display, serif"
+              fontWeight="800"
+              fontStyle="italic"
+              fontSize="44"
+              fill="#FFFFFF"
+            >
+              N
+            </text>
+            <polygon
+              points="66,18 68.2,24 74.4,24.3 69.6,28.5 71.2,34.8 66,31.6 60.8,34.8 62.4,28.5 57.6,24.3 63.8,24"
+              fill="#0068C2"
+            />
+          </svg>
+
+          {/* Wordmark */}
+          <div
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 800,
+              fontSize: "clamp(52px, 8vw, 96px)",
+              color: "#FFFFFF",
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+              textShadow: "0 2px 32px rgba(0,0,0,0.5)",
+            }}
+          >
+            News<span style={{ fontStyle: "italic", fontWeight: 600 }}>USA</span>
+          </div>
+
+          {/* Tagline */}
+          <div
+            style={{
+              fontFamily: "'Work Sans', sans-serif",
+              fontWeight: 500,
+              fontSize: "clamp(11px, 1.2vw, 15px)",
+              color: "rgba(255,255,255,0.65)",
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              marginTop: 14,
+            }}
+          >
+            Media Coverage. Guaranteed.
+          </div>
+        </div>
 
         {/* Subtle bottom vignette so progress bar reads cleanly */}
         <div
