@@ -1,12 +1,13 @@
 import React from "react";
 
 const Logo = ({ light = false, compact = false }) => {
-  const color = light ? "#FFFFFF" : "#122D51";
+  const iconBg = light ? "#FFFFFF" : "#122D51";
+  const wordColor = light ? "#FFFFFF" : "#0068C2";
   const accent = "#0068C2";
   if (compact) {
     return (
       <svg viewBox="0 0 48 48" width="34" height="34" aria-label="NewsUSA mark">
-        <rect x="2" y="2" width="44" height="44" rx="6" fill={color} />
+        <rect x="2" y="2" width="44" height="44" rx="6" fill={iconBg} />
         <text
           x="50%"
           y="58%"
@@ -29,7 +30,7 @@ const Logo = ({ light = false, compact = false }) => {
   return (
     <div className="flex items-center gap-3" data-testid="brand-logo">
       <svg viewBox="0 0 44 44" width="32" height="32" aria-label="NewsUSA mark">
-        <rect x="2" y="2" width="40" height="40" rx="6" fill={color} />
+        <rect x="2" y="2" width="40" height="40" rx="6" fill={iconBg} />
         <text
           x="50%"
           y="60%"
@@ -51,7 +52,7 @@ const Logo = ({ light = false, compact = false }) => {
         <div
           className="display"
           style={{
-            color: color,
+            color: wordColor,
             fontSize: "22px",
             fontWeight: 800,
             letterSpacing: "-0.02em",
@@ -62,7 +63,7 @@ const Logo = ({ light = false, compact = false }) => {
         <div
           className="font-sans"
           style={{
-            color: light ? "rgba(255,255,255,0.65)" : "rgba(18,45,81,0.55)",
+            color: light ? "rgba(255,255,255,0.65)" : "rgba(0,104,194,0.6)",
             fontSize: "9px",
             letterSpacing: "0.22em",
             textTransform: "uppercase",
